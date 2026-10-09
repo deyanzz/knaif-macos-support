@@ -4,7 +4,8 @@
 # build-pkg.sh installs this as `postinstall` beside a generated model.env naming MODEL, read from
 # the model manifest the payload ships (never typed by hand). Runs `knaif models pull` as the
 # console user so the model lands in their ~/.knaif/models — which `models pull` also keeps out of
-# Time Machine (D18). Setup waits for it; a failure is reported, never fatal.
+# Time Machine (D18). Setup waits for it; a failure is reported, never fatal. Installer shows only
+# "Running package scripts…" meanwhile, so notifications say when the download starts and ends.
 
 here="$(dirname "$0")"
 # shellcheck source=common.sh
@@ -27,9 +28,12 @@ if as_user "$user" "$knaif" models list 2>/dev/null |
 fi
 
 log "downloading $MODEL for $user"
+notify_user "$user" "Downloading the AI model (about 2.5 GB). Setup finishes when it is done, usually in 5 to 15 minutes."
 if as_user "$user" "$knaif" models pull "$MODEL"; then
   log "$MODEL is installed"
+  notify_user "$user" "The AI model is downloaded. Setup is finishing."
 else
   log "could not download $MODEL; knaif is installed anyway. Retry: $retry"
+  notify_user "$user" "The AI model did not download, but knaif is installed. Run \"$retry\" later; it continues where it stopped."
 fi
 exit 0

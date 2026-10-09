@@ -319,6 +319,69 @@ def test_a_failed_model_download_never_fails_setup(tmp_path: Path, volume) -> No
     assert "Retry: knaif models pull knaif-test-v9" in proc.stdout
 
 
+def _fake_notifier(env: dict, launchctl_exit: int = 0) -> None:
+    """`id -u`, `launchctl asuser` and `osascript`: record who is notified and with what."""
+    fakes = Path(env["FAKE_BIN"])
+    _write_exe(fakes / "id", "echo 501\n")
+    _write_exe(
+        fakes / "launchctl",
+        f'echo "$1 $2" >> "$FAKE_LOG.launchctl"\n[ {launchctl_exit} = 0 ] || exit {launchctl_exit}\n'
+        'shift 2\nexec "$@"\n',
+    )
+    # The message is osascript's last argument (the AppleScript reads it from argv).
+    _write_exe(
+        fakes / "osascript", 'for a; do last="$a"; done\necho "$last" >> "$FAKE_LOG.notify"\n'
+    )
+
+
+@pytest.mark.parametrize(
+    "pull_exit, end", [(0, "The AI model is downloaded"), (1, "did not download")]
+)
+def test_the_model_download_says_when_it_starts_and_ends(
+    tmp_path: Path, volume, pull_exit: int, end: str
+) -> None:
+    vol, env, log = volume
+    _fake_knaif(vol, "  knaif-test-v9    available\\n", pull_exit=pull_exit)
+    _fake_notifier(env)
+    script = _install_script(tmp_path, "model-postinstall.sh", "postinstall", MODEL_ENV)
+    proc = _run_installer_script(script, vol, env)
+    assert proc.returncode == 0, proc.stderr
+    notes = Path(f"{log}.notify").read_text().splitlines()
+    assert len(notes) == 2
+    assert notes[0].startswith("Downloading the AI model")
+    assert end in notes[1]
+    if pull_exit:
+        assert "knaif models pull knaif-test-v9" in notes[1]
+    # Posted into the console user's session, as them.
+    assert set(Path(f"{log}.launchctl").read_text().splitlines()) == {"asuser 501"}
+    assert set(Path(f"{log}.sudo").read_text().split()) == {"alice"}
+
+
+def test_a_notification_that_cannot_be_shown_never_fails_setup(tmp_path: Path, volume) -> None:
+    vol, env, log = volume
+    _fake_knaif(vol, "  knaif-test-v9    available\\n")
+    _fake_notifier(env, launchctl_exit=1)
+    script = _install_script(tmp_path, "model-postinstall.sh", "postinstall", MODEL_ENV)
+    proc = _run_installer_script(script, vol, env)
+    assert proc.returncode == 0, proc.stderr
+    assert "knaif models pull knaif-test-v9" in log.read_text()
+    assert "is installed" in proc.stdout
+    assert not Path(f"{log}.notify").exists()
+
+
+@pytest.mark.parametrize("setup", ["installed", "no-user"])
+def test_no_notification_when_nothing_downloads(tmp_path: Path, volume, setup: str) -> None:
+    vol, env, log = volume
+    _fake_knaif(vol, "  knaif-test-v9    installed\\n")
+    _fake_notifier(env)
+    if setup == "no-user":
+        env = {**env, "FAKE_CONSOLE_USER": ""}
+    script = _install_script(tmp_path, "model-postinstall.sh", "postinstall", MODEL_ENV)
+    proc = _run_installer_script(script, vol, env)
+    assert proc.returncode == 0
+    assert not Path(f"{log}.notify").exists()
+
+
 def test_upgrade_clears_only_the_program_folders(tmp_path: Path, volume) -> None:
     vol, env, _log = volume
     root = vol / "usr/local/knaif"

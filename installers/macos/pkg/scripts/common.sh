@@ -37,6 +37,19 @@ as_user() {
   sudo -u "$user" -H "$@"
 }
 
+# Post a macOS notification, titled "knaif", to user $1's desktop. While a script runs, Installer
+# shows only "Running package scripts…" and offers a package no way to change that text, so a long
+# step says what it is doing this way. Scripts run as root outside the user's session, hence
+# `launchctl asuser`. The message travels as an argument, never inside the AppleScript source.
+# Best effort: a notification that cannot be shown changes nothing.
+notify_user() {
+  local user="$1" message="$2" uid
+  uid="$(id -u "$user" 2>/dev/null)" || return 0
+  launchctl asuser "$uid" sudo -u "$user" -H osascript \
+    -e 'on run argv' -e 'display notification (item 1 of argv) with title "knaif"' -e 'end run' \
+    "$message" > /dev/null 2>&1 || true
+}
+
 # Homebrew's own location: /opt/homebrew on Apple Silicon, /usr/local for a Rosetta install.
 find_brew() {
   local brew
