@@ -88,9 +88,9 @@
     <pkg-ref id="tech.blackdeep.knaif.tool.tesseract"/>
   </choice>
 
-  <choice id="model" title="Download the knaif AI model now — @MODEL@ (~2.5 GB; setup will wait)"
+  <choice id="model" title="AI model — 2.5 GB download, takes several minutes"
           start_selected="true"
-          description="Needed for &quot;knaif run&quot;. Downloads into your ~/.knaif/models, which is kept out of Time Machine. Skipped if it is already there; if it fails, run &quot;knaif models pull @MODEL@&quot; later.">
+          description="Needed for &quot;knaif run&quot;. Setup downloads @MODEL@ (about 2.5 GB) before it finishes. While it does, the installer shows &quot;Running package scripts…&quot; with no progress for 5 to 15 minutes, depending on your connection: it is working, not stuck. The model goes into your ~/.knaif/models, which is kept out of Time Machine, and is skipped if it is already there. If the download fails, knaif is still installed: run &quot;knaif models pull @MODEL@&quot; later, and it continues where it stopped.">
     <pkg-ref id="tech.blackdeep.knaif.model"/>
   </choice>
 
