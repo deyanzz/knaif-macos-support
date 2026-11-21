@@ -45,3 +45,26 @@
 2026-11-20 14:13:26 metal-fresh-account: waiting for /Users/Shared/knaif-metal-check/summary.txt (manual)
 2026-11-20 14:39:28 metal-fresh-account: done (exit 0, 26 min), comment 7039761044
 2026-11-20 14:39:28 START commit-cleanroom (budget 10 min)
+2026-11-20 14:39:32 commit-cleanroom: done (exit 0, 0 min), comment 7039762342
+2026-11-20 14:39:32 open-pr: done in an earlier run, skipped
+2026-11-20 14:39:32 START published (budget 5 min)
+2026-11-20 14:39:35 published: waiting (exit 0, 0 min), comment 7039763221
+2026-11-20 14:39:35 published: waiting for the owner (comment 7039763221)
+2026-11-20 14:55:12 open-pr: released by the Mac contributor (hold marker removed)
+2026-11-20 14:55:23 preflight: done in an earlier run, skipped
+2026-11-20 14:55:23 live-metal: done in an earlier run, skipped
+2026-11-20 14:55:23 live-cpu: done in an earlier run, skipped
+2026-11-20 14:55:23 beep-check: done in an earlier run, skipped
+2026-11-20 14:55:23 verdicts: done in an earlier run, skipped
+2026-11-20 14:55:23 restore-l3: done in an earlier run, skipped
+2026-11-20 14:55:23 commit-evidence: done in an earlier run, skipped
+2026-11-20 14:55:23 cleanroom: done in an earlier run, skipped
+2026-11-20 14:55:23 metal-fresh-account: done in an earlier run, skipped
+2026-11-20 14:55:23 commit-cleanroom: done in an earlier run, skipped
+2026-11-20 14:55:23 START open-pr (budget 10 min)
+2026-11-20 14:55:32 open-pr: done (exit 0, 0 min), comment 7040073931
+2026-11-20 14:55:32 published: waiting for the owner (comment 7039763221)
+2026-11-21 14:51:27 published: the owner says continue
+2026-11-21 14:51:27 START homebrew (budget 20 min)
+2026-11-21 14:52:18 homebrew: done (exit 0, 0 min), comment 7062867387
+2026-11-21 14:52:19 END: every step done

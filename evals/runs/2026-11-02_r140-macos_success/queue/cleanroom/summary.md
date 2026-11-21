@@ -10,12 +10,20 @@ An unresolved @rpath dependency resolves on THIS machine only because the file h
 to exist here (a build box, a Mac with Homebrew, ...). Stage it beside the binary, or
 remove the dependency (see D3 for the OpenMP case).
 ```
-**For the owner:** run1-zip: the VM did not come up
-- PDFium on macOS 12 (information): 
+- run1-zip: **CLEAN ROOM PASS (8 checks)**
+- PDFium on macOS 12 (information): exit 0
 
 PDFium on macOS 12:
 ```text
-ssh: connect to host 192.168.64.24 port 22: Operation timed out
+pdfium/knaif-1.4.0-macos-arm64/bin/libpdfium.dylib
+xcode-select: error: no developer tools were found at '/Applications/Xcode.app', and no install could be requested (perhaps no UI is present), please install manually from 'developer.apple.com'.
+⚠  No GPU backend is active — running on CPU. Inference will be slow (the first request can take a minute or more).
+compress (rasterize — removes selectable text)
+⚠ sample-compressed.pdf: couldn't make it smaller — kept it as it was
+  not smaller (2.2 KB → 114.5 KB)
+exit 0
+-rw-r--r--  1 admin  staff  2221 20 Nov 03:39 sample-compressed.pdf
+-rw-r--r--  1 admin  staff  2221 20 Nov 03:39 sample.pdf
 ```
-**For the owner:** run2-pkg-offline: the VM did not come up
-**For the owner:** run3-pkg-upgrade: the VM did not come up
+- run2-pkg-offline: **CLEAN ROOM PASS (13 checks)**
+- run3-pkg-upgrade: **CLEAN ROOM PASS (13 checks)**
